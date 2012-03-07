@@ -1,9 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <menu xmlns:android="http://schemas.android.com/apk/res/android">
-        <item android:id="@+id/centre_loc"
-          android:icon="@android:drawable/ic_menu_mylocation"
-          android:title="@string/locString"
-          />
-   
-        
-    </menu>
+    <item
+        android:id="@+id/centre_loc"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:title="@string/locString"/>
+    <item
+        android:id="@+id/refresh_events"
+        android:icon="@drawable/ic_menu_refresh"
+        android:title="@string/refresh_string"/>
+
+</menu>
