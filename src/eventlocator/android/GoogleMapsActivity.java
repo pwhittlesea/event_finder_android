@@ -10,6 +10,7 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import eventlocator.android.MyLocation.LocationResult;
 import eventlocator.android.R;
 import eventlocator.android.data.Event;
 import eventlocator.android.data.ServerConnection;
@@ -32,6 +33,7 @@ public class GoogleMapsActivity extends MapActivity {
 	private LocationManager myLocationManager;
 	private LocationListener myLocationListener;
 	private MyLocationOverlay myLocationOverlay = null;
+	private Location currentLocation = null;
 	MapView mapView;
 
 	/** Called when the activity is first created. */
@@ -45,27 +47,44 @@ public class GoogleMapsActivity extends MapActivity {
 		mapView.getOverlays().add(myLocationOverlay);
 		// List<Overlay> mapOverlays = mapView.getOverlays();
 
-		myLocationListener = new MyLocationListener();
+		MyLocation myLocation = new MyLocation();
+		LocationResult locationResult = new LocationResult(){
+			@Override
+			public void gotLocation(final Location location){
+				//Got the location!
+				runOnUiThread(new Runnable(){
+					public void run() {
+						currentLocation = location;
+						System.out.println("Houston. We have a location.");
+						refreshEvents();
+						// TODO Location-to-GeoPoint method - YES WE NEED IT MICHAEL
+						mapView.getController().animateTo(new GeoPoint((int) (currentLocation.getLatitude() * 1E6), (int) (currentLocation.getLongitude() * 1E6)));
+						mapView.getController().setZoom(17);
+					}
+				});
+			}
+		};
+		myLocation.getLocation(this, locationResult);
 
-		myLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		myLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				0, 0, myLocationListener);
-
-		if (myLocationManager
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-			// Get the current location in start-up, if a past location is
-			// available
-			myLocation();
-			// GeoPoint initGeoPoint = new GeoPoint((int) (myLocationManager
-			// .getLastKnownLocation(LocationManager.GPS_PROVIDER)
-			// .getLatitude() * 1000000), (int) (myLocationManager
-			// .getLastKnownLocation(LocationManager.GPS_PROVIDER)
-			// .getLongitude() * 1000000));
-			// CenterLocation(initGeoPoint);
-		}
-
-		refreshEvents();
+		//		myLocationListener = new MyLocationListener();
+		//
+		//		myLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		//
+		//		myLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+		//				0, 0, myLocationListener);
+		//
+		//		if (myLocationManager
+		//				.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
+		//			// Get the current location in start-up, if a past location is
+		//			// available
+		//			myLocation();
+		//			// GeoPoint initGeoPoint = new GeoPoint((int) (myLocationManager
+		//			// .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+		//			// .getLatitude() * 1000000), (int) (myLocationManager
+		//			// .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+		//			// .getLongitude() * 1000000));
+		//			// CenterLocation(initGeoPoint);
+		//		}
 
 	}
 
@@ -97,29 +116,43 @@ public class GoogleMapsActivity extends MapActivity {
 		EventItemizedOverlay itemizedoverlay = new EventItemizedOverlay(
 				drawable, this);
 
-		for (Event event : getEvents()) {
-			GeoPoint point = new GeoPoint((int) (event.getLat() * 1E6),
-					(int) (event.getLong() * 1E6));
-			OverlayItem overlayitem = new OverlayItem(point, event.getLabel(),
-					event.getDesc());
-			itemizedoverlay.addOverlay(overlayitem);
+		if(currentLocation != null) {
+			for (Event event : getEvents()) {
+				GeoPoint point = new GeoPoint((int) (event.getLat() * 1E6),
+						(int) (event.getLong() * 1E6));
+				OverlayItem overlayitem = new OverlayItem(point,
+						event.getLabel(), event.getDesc());
+				itemizedoverlay.addOverlay(overlayitem);
 
+			}
+			mapView.getOverlays().add(itemizedoverlay);
 		}
 
-		mapView.getOverlays().add(itemizedoverlay);
 	}
 
 	private ArrayList<Event> getEvents() {
+		System.out.println("getEvents() called");
 		Log.d("serverurl", getString(R.string.server_url));
-		SpecialGeoPoint geoPoint = new SpecialGeoPoint(50.935868, -1.398832);
+		// SpecialGeoPoint geoPoint = new SpecialGeoPoint(50.935868, -1.398832);
+
+		// GeoPoint initGeoPoint = new GeoPoint((int) (myLocationManager
+		// .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+		// .getLatitude() * 1000000), (int) (myLocationManager
+		// .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+		// .getLongitude() * 1000000));
+		//		GeoPoint initGeoPoint = myLocationOverlay.getMyLocation();
+
+		SpecialGeoPoint geoPoint = new SpecialGeoPoint(
+				currentLocation.getLatitude(),
+				currentLocation.getLongitude());
 		ServerConnection serverConnection = new ServerConnection(
 				getString(R.string.server_url), geoPoint);
 		ArrayList<Event> events = serverConnection.getEvents();
-		Log.d("Events from server", events.size()+"");
-		
+		Log.d("Events from server", events.size() + "");
+
 		ArrayList<Event> subList = new ArrayList<Event>();
 		subList.addAll(events.subList(0, 150));
-		
+
 		return subList;
 	}
 
@@ -134,8 +167,8 @@ public class GoogleMapsActivity extends MapActivity {
 		GeoPoint initGeoPoint = new GeoPoint((int) (myLocationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 				.getLatitude() * 1000000), (int) (myLocationManager
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-				.getLongitude() * 1000000));
+						.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+						.getLongitude() * 1000000));
 		CenterLocation(initGeoPoint);
 
 	}

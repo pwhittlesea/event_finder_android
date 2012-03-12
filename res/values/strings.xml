@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, HelloGoogleMapsActivity!</string>
-    <string name="app_name">EventLocator</string>
+    <string name="app_name">Event Locator</string>
     <string name="locString">My Location</string>
        <string name="server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_events.php</string>
        <string name="refresh_string">Refresh</string>
