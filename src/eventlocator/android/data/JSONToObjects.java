@@ -36,7 +36,7 @@ public class JSONToObjects {
 			// objectMapper.setDateFormat(simpleDateFormat);
 			mEvents = objectMapper.readValue(jp, Events.class);
 		
-			events = mEvents.get("events");
+			events = mEvents;
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

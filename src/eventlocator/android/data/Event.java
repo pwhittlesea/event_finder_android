@@ -6,6 +6,7 @@ public class Event {
 	float lng;
 	float lat;
 	String label;
+	String desc;
 	Date start;
 	Date end;
 	public String getUrl() {
@@ -49,6 +50,12 @@ public class Event {
 	}
 	public String toString(){
 		return url + " " + lng + " " + lat + " " +label + " " + start + " " + end;
+	}
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 	
 	

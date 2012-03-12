@@ -3,6 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Events extends HashMap<String, ArrayList<Event>> {
+public class Events extends ArrayList<Event>{
 
 }
