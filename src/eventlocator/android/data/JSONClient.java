@@ -66,8 +66,8 @@ public class JSONClient {
 			response = httpclient.execute(httpget);
 
 			// Examine the response status
-			System.out.println(response.getStatusLine().getStatusCode());
-			System.out.println(HttpStatus.SC_OK);
+			System.out.println("HTTP Status" + response.getStatusLine().getStatusCode());
+			
 			// Get hold of the response entity
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -80,7 +80,6 @@ public class JSONClient {
 					// A Simple JSON Response Read
 					InputStream instream = entity.getContent();
 					result = convertStreamToString(instream);
-					System.out.println("result: " + result);
 
 				}
 			} else {
