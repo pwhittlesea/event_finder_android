@@ -36,7 +36,6 @@ public class MyLocation {
 
 		// don't start listeners if no provider is enabled
 		if (!gps_enabled && !network_enabled) {
-			System.out.println("no gps or network enabled");
 			return false;
 		}
 		if (gps_enabled)
@@ -54,7 +53,6 @@ public class MyLocation {
 	LocationListener locationListenerGps = new LocationListener() {
 		public void onLocationChanged(Location location) {
 			timer1.cancel();
-			System.out.println("in location changed listener");
 			locationResult.gotLocation(location);
 		//	lm.removeUpdates(this);
 		//	lm.removeUpdates(locationListenerNetwork);
