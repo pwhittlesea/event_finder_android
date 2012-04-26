@@ -1,49 +1,99 @@
 package eventlocator.android.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.OverlayItem;
+
+import eventlocator.android.EventItemizedOverlay;
 
 public class ServerConnection {
 	ArrayList<Event> events;
+	EventItemizedOverlay itemizedoverlay;
+	Context context;
 
 	/**
 	 * The class used by the activity to get the events
 	 * 
 	 * @param url
+	 * @param context
 	 */
-	public ServerConnection(String url, SpecialGeoPoint geoPoint) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		String json = jsonFromObject(geoPoint);
-		json = URLEncoder.encode("{\"geo\":{\"lat\":50.9358682,\"long\":-1.3988324}}");
-				//URLEncoder.encode(json.toString());
-		System.out.println("server url" + url);
-		String jsonFromServer;
-	
-		String jsonUrl = url + "?req=" + json;
-		//String jsonUrl = url + "?req={\"geo\":{\"lat\":50.9358682,\"long\":-1.3988324}}";
-		System.out.println("json " + jsonUrl);
-		events = new ArrayList<Event>();
-		try {
-			jsonFromServer = JSONClient.connect(jsonUrl);
-			JSONToObjects jsonToObjects = new JSONToObjects();
-			jsonToObjects.init(jsonFromServer);
-			events = jsonToObjects.findAll();
+	public ServerConnection(String url, SpecialGeoPoint geoPoint,
+			EventItemizedOverlay itemizedoverlay, Context context) {
+		this.itemizedoverlay = itemizedoverlay;
+		this.context = context;
 
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String json = jsonFromObject(geoPoint);
+		System.out.println("geo json " + json);
+		json = "{\"geo\":" + json + "}";
+		json = URLEncoder.encode(json);
+
+		System.out.println("server url" + url);
+
+		String jsonUrl = url + "?req=" + json;
+
+		new GetJSONTask().execute(jsonUrl, null, null);
+
+	}
+
+	private class GetJSONTask extends AsyncTask<String, Void, ArrayList<Event>> {
+		protected ArrayList<Event> doInBackground(String... jsonUrl) {
+			ArrayList<Event> subList = new ArrayList<Event>();
+
+			String jsonFromServer;
+
+			events = new ArrayList<Event>();
+			try {
+				jsonFromServer = JSONClient.connect(jsonUrl[0]);
+				JSONToObjects jsonToObjects = new JSONToObjects();
+				jsonToObjects.init(jsonFromServer);
+				events = jsonToObjects.findAll();
+				System.out.println("events size: " + events.size());
+
+			} catch (Exception e1) {
+				System.out.println("Couldn't get events from server");
+				e1.printStackTrace();
+			}
+			if (events.size() > 150) {
+				subList.addAll(events.subList(0, 150));
+			}
+			return subList;
 		}
 
+		protected void onProgressUpdate(Void... progress) {
+
+		}
+
+		protected void onPostExecute(ArrayList<Event> result) {
+
+			if (events.size() == 0) {
+				Log.d("getEvents()", "No Events available");
+				Toast.makeText(context, "No events near your location",
+						Toast.LENGTH_LONG).show();
+
+			} else {
+				Log.d("getEvents()", "Found " + events.size());
+
+			}
+			for (Event event : result) {
+				GeoPoint point = new GeoPoint((int) (event.getLat() * 1E6),
+						(int) (event.getLong() * 1E6));
+				OverlayItem overlayitem = new OverlayItem(point,
+						event.getLabel(), event.getDesc());
+				itemizedoverlay.addOverlay(overlayitem);
+
+			}
+
+		}
 	}
 
 	public static String jsonFromObject(Object object) {
@@ -59,15 +109,11 @@ public class ServerConnection {
 
 		} catch (Exception e) {
 
-			Log.e("jsonfromobj", "Unable to serialize to json: " + object, e);
+			Log.e("jsonFromObj", "Unable to serialize to json: " + object, e);
 
 			return null;
 		}
 		return writer.toString();
-	}
-
-	public ArrayList<Event> getEvents() {
-		return events;
 	}
 
 }
