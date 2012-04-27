@@ -17,7 +17,7 @@ import com.google.android.maps.OverlayItem;
 import eventlocator.android.EventItemizedOverlay;
 
 public class ServerConnection {
-	ArrayList<Event> events;
+	
 	EventItemizedOverlay itemizedoverlay;
 	Context context;
 
@@ -50,15 +50,14 @@ public class ServerConnection {
 			ArrayList<Event> subList = new ArrayList<Event>();
 
 			String jsonFromServer;
-
-			events = new ArrayList<Event>();
+			ArrayList<Event> events = new ArrayList<Event>();
 			try {
 				jsonFromServer = JSONClient.connect(jsonUrl[0]);
 				JSONToObjects jsonToObjects = new JSONToObjects();
 				jsonToObjects.init(jsonFromServer);
 				events = jsonToObjects.findAll();
-				System.out.println("events size: " + events.size());
-
+				
+				Log.d("getEvents()", "Found " + events.size());
 			} catch (Exception e1) {
 				System.out.println("Couldn't get events from server");
 				e1.printStackTrace();
@@ -75,13 +74,13 @@ public class ServerConnection {
 
 		protected void onPostExecute(ArrayList<Event> result) {
 
-			if (events.size() == 0) {
+			if (result.size() == 0) {
 				Log.d("getEvents()", "No Events available");
 				Toast.makeText(context, "No events near your location",
 						Toast.LENGTH_LONG).show();
 
 			} else {
-				Log.d("getEvents()", "Found " + events.size());
+				
 
 			}
 			for (Event event : result) {
