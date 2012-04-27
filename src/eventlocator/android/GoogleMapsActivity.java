@@ -1,8 +1,10 @@
 package eventlocator.android;
 
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,12 +32,15 @@ public class GoogleMapsActivity extends MapActivity {
 	Drawable eventPin;
 
 	boolean firstFoundLocation = true;
+	
+	protected Dialog mSplashDialog;
 
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+			    
 		System.out.println("onCreate(); called");
 		setContentView(R.layout.main);
 		mapView = (MapView) findViewById(R.id.mapview);
@@ -43,6 +48,21 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
 		myLocation = new MyLocation();
+		
+		 MyStateSaver data = (MyStateSaver) getLastNonConfigurationInstance();
+		    if (data != null) {
+		        // Show splash screen if still loading
+		        if (data.showSplashScreen) {
+		            showSplashScreen();
+		        }
+		        setContentView(findViewById(R.id.mapview));        
+		 
+		        // Rebuild your UI with your saved state here
+		    } else {
+		        showSplashScreen();
+		        setContentView((findViewById(R.id.mapview)));
+		        // Do your heavy loading here on a background thread
+		    }
 		
 		eventPin = this.getResources().getDrawable(
 				R.drawable.ic_event_pin);
@@ -181,5 +201,49 @@ public class GoogleMapsActivity extends MapActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+	    MyStateSaver data = new MyStateSaver();
+	    // Save your important data here
+	 
+	    if (mSplashDialog != null) {
+	        data.showSplashScreen = true;
+	        removeSplashScreen();
+	    }
+	    return data;
+	}
+	 
+	/**
+	 * Removes the Dialog that displays the splash screen
+	 */
+	protected void removeSplashScreen() {
+	    if (mSplashDialog != null) {
+	        mSplashDialog.dismiss();
+	        mSplashDialog = null;
+	    }
+	}
+	 
+	/**
+	 * Shows the splash screen over the full Activity
+	 */
+	protected void showSplashScreen() {
+	    mSplashDialog = new Dialog(this, R.style.SplashScreen);
+	    //mSplashDialog.setContentView(R.layout.splashscreen);
+	    mSplashDialog.setCancelable(false);
+	    mSplashDialog.show();
+	 
+	    // Set Runnable to remove splash screen just in case
+	    final Handler handler = new Handler();
+	    handler.postDelayed(new Runnable() {
+	      public void run() {
+	        removeSplashScreen();
+	      }
+	    }, 3000);
+	}
 
+	private class MyStateSaver {
+	    public boolean showSplashScreen = false;
+	    // Your other important fields here
+	}
 }
