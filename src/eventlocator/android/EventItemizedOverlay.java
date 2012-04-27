@@ -14,12 +14,14 @@ public class EventItemizedOverlay extends ItemizedOverlay {
 	 	 
 	public EventItemizedOverlay(Drawable defaultMarker) {
 		 super(boundCenterBottom(defaultMarker));
+		 populate();
 		
 	}
 	
 	public EventItemizedOverlay(Drawable defaultMarker, Context context) {
 		  super(boundCenterBottom(defaultMarker));
 		  mContext = context;
+		  populate();
 		}
 	@Override
 	protected OverlayItem createItem(int i) {

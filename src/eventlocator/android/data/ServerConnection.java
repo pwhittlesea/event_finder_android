@@ -59,7 +59,7 @@ public class ServerConnection {
 				
 				Log.d("getEvents()", "Found " + events.size());
 			} catch (Exception e1) {
-				System.out.println("Couldn't get events from server");
+				Log.e("getEvents()","Couldn't get events from server");
 				e1.printStackTrace();
 			}
 			if (events.size() > 150) {
@@ -87,7 +87,7 @@ public class ServerConnection {
 				GeoPoint point = new GeoPoint((int) (event.getLat() * 1E6),
 						(int) (event.getLong() * 1E6));
 				OverlayItem overlayitem = new OverlayItem(point,
-						event.getLabel(), event.getDesc());
+						event.getLabel(), event.getDesc());			
 				itemizedoverlay.addOverlay(overlayitem);
 
 			}

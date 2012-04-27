@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -25,19 +26,34 @@ public class GoogleMapsActivity extends MapActivity {
 	MyLocation myLocation;
 	LocationResult locationResult;
 	MapView mapView;
+	EventItemizedOverlay itemizedoverlay;
+	Drawable eventPin;
 
 	boolean firstFoundLocation = true;
+	@Override 
+	public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	};
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		System.out.println("onCreate(); called");
 		setContentView(R.layout.main);
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
 		myLocation = new MyLocation();
+		
+		eventPin = this.getResources().getDrawable(
+				R.drawable.ic_event_pin);
+		
+		
+		itemizedoverlay = new EventItemizedOverlay(
+				eventPin, this);
+
 
 		locationResult = new LocationResult() {
 			@Override
@@ -45,7 +61,7 @@ public class GoogleMapsActivity extends MapActivity {
 				// This location could still be null!?
 				runOnUiThread(new Runnable() {
 					public void run() {
-						Log.d("gotLocation()", "Location: " + location);
+						//Log.d("gotLocation()", "Location: " + location);
 						currentLocation = location;
 						// TODO Location-to-GeoPoint method - YES WE NEED IT
 						// MICHAEL
@@ -85,19 +101,21 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocation(); // Center on location used for checking events
 		Log.d("refreshEvents", "refreshing events");
 		if (!mapView.getOverlays().isEmpty()) {
+			System.out.println("clearing overlays");
 			mapView.getOverlays().clear();
-			mapView.invalidate();
+			itemizedoverlay = new EventItemizedOverlay(
+					eventPin, this);
+			
 		}
-
+		System.out.println("add my location overlay");
 		mapView.getOverlays().add(myLocationOverlay);
-		Drawable drawable = this.getResources().getDrawable(
-				R.drawable.ic_event_pin);
-		EventItemizedOverlay itemizedoverlay = new EventItemizedOverlay(
-				drawable, this);
-
+	
 		if (currentLocation != null) {
-			getEvents(itemizedoverlay);
 			mapView.getOverlays().add(itemizedoverlay);
+			System.out.println("get event");
+			getEvents(itemizedoverlay);
+			System.out.println("add itemased overlay");
+			
 		}
 
 	}
