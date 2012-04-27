@@ -30,10 +30,7 @@ public class GoogleMapsActivity extends MapActivity {
 	Drawable eventPin;
 
 	boolean firstFoundLocation = true;
-	@Override 
-	public void onConfigurationChanged(android.content.res.Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	};
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -82,6 +79,12 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocation.getLocation(this, locationResult);
 
 	}
+	
+	// override on screen rotate so onCreate is not called again with every rotate
+	@Override 
+	public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	};
 
 	@Override
 	protected void onPause() {
