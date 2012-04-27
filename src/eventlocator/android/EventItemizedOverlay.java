@@ -53,10 +53,14 @@ public class EventItemizedOverlay extends ItemizedOverlay {
 		dialog.setTitle(item.getTitle());
 
 		TextView text = (TextView) dialog.findViewById(R.id.text);
-		text.setText(item.getSnippet() + item.getSnippet() + item.getSnippet());
+		text.setText(item.getSnippet() + item.getSnippet() + item.getSnippet() + item.getSnippet() + item.getSnippet() + item.getSnippet());
 		text.setMovementMethod(new ScrollingMovementMethod());
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.advert_phd);
+		ImageView brandImage = (ImageView) dialog
+				.findViewById(R.id.brand_image);
+		brandImage.setImageResource(R.drawable.uos_logo_vert_light);
+
 		dialog.show();
 		return true;
 	}
