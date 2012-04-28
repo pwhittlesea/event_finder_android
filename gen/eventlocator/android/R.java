@@ -41,10 +41,11 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040001;
+        public static final int fetch_events_server_url=0x7f040003;
+        public static final int fetch_locations_server_url=0x7f040004;
         public static final int hello=0x7f040000;
         public static final int locString=0x7f040002;
-        public static final int refresh_string=0x7f040004;
-        public static final int server_url=0x7f040003;
+        public static final int refresh_string=0x7f040005;
     }
     public static final class style {
         public static final int SplashScreen=0x7f050000;

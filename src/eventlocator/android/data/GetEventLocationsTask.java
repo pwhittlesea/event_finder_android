@@ -16,7 +16,7 @@ import com.google.android.maps.OverlayItem;
 
 import eventlocator.android.EventItemizedOverlay;
 
-public class ServerConnection {
+public class GetEventLocationsTask {
 
 	EventItemizedOverlay itemizedoverlay;
 	Context context;
@@ -27,7 +27,7 @@ public class ServerConnection {
 	 * @param url
 	 * @param context
 	 */
-	public ServerConnection(String url, SpecialGeoPoint geoPoint,
+	public GetEventLocationsTask(String url, SpecialGeoPoint geoPoint,
 			EventItemizedOverlay itemizedoverlay, Context context) {
 		this.itemizedoverlay = itemizedoverlay;
 		this.context = context;
@@ -45,29 +45,30 @@ public class ServerConnection {
 
 	}
 
-	private class GetJSONTask extends AsyncTask<String, Void, ArrayList<Event>> {
-		protected ArrayList<Event> doInBackground(String... jsonUrl) {
-			ArrayList<Event> subList = new ArrayList<Event>();
+	private class GetJSONTask extends
+			AsyncTask<String, Void, ArrayList<EventLocation>> {
+		protected ArrayList<EventLocation> doInBackground(String... jsonUrl) {
+			ArrayList<EventLocation> subList = new ArrayList<EventLocation>();
 
 			String jsonFromServer;
-			ArrayList<Event> events = new ArrayList<Event>();
+			ArrayList<EventLocation> eventLocations = new ArrayList<EventLocation>();
 			try {
 				jsonFromServer = JSONClient.connect(jsonUrl[0]);
 				Log.d("jsonFromServer", jsonFromServer);
-				JSONToObjects<Event, Events> jsonToObjects = new JSONToObjects<Event, Events>(
-						Event.class, Events.class);
+				JSONToObjects<EventLocation, EventLocations> jsonToObjects = new JSONToObjects<EventLocation, EventLocations>(
+						EventLocation.class, EventLocations.class);
 				jsonToObjects.init(jsonFromServer);
-				events = jsonToObjects.findAll();
+				eventLocations = jsonToObjects.findAll();
 
-				Log.d("getEvents()", "Found " + events.size());
+				Log.d("getEventLocations", "Found " + eventLocations.size());
 			} catch (Exception e1) {
 				Log.e("getEvents()", "Couldn't get events from server");
 				e1.printStackTrace();
 			}
-			if (events.size() > 150) {
-				subList.addAll(events.subList(0, 150));
+			if (eventLocations.size() > 150) {
+				subList.addAll(eventLocations.subList(0, 150));
 			} else {
-				return events;
+				return eventLocations;
 			}
 			return subList;
 		}
@@ -76,21 +77,22 @@ public class ServerConnection {
 
 		}
 
-		protected void onPostExecute(ArrayList<Event> result) {
+		protected void onPostExecute(ArrayList<EventLocation> result) {
 
 			if (result.size() == 0) {
-				Log.d("getEvents()", "No Events available");
+				Log.d("getEventLocations", "No Events available");
 				Toast.makeText(context, "No events near your location",
 						Toast.LENGTH_LONG).show();
 
 			} else {
 
 			}
-			for (Event event : result) {
-				GeoPoint point = new GeoPoint((int) (event.getLat() * 1E6),
-						(int) (event.getLong() * 1E6));
+			for (EventLocation eventLocation : result) {
+				GeoPoint point = new GeoPoint(
+						(int) (eventLocation.getLat() * 1E6),
+						(int) (eventLocation.getLong() * 1E6));
 				OverlayItem overlayitem = new OverlayItem(point,
-						event.getLabel(), event.getDesc());
+						eventLocation.getLabel(), eventLocation.getPlace());
 				itemizedoverlay.addOverlay(overlayitem);
 
 			}

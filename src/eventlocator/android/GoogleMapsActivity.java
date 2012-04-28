@@ -18,6 +18,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
 import eventlocator.android.MyLocation.LocationResult;
+import eventlocator.android.data.GetEventLocationsTask;
 import eventlocator.android.data.ServerConnection;
 import eventlocator.android.data.SpecialGeoPoint;
 
@@ -146,8 +147,7 @@ public class GoogleMapsActivity extends MapActivity {
 	private void getEvents(EventItemizedOverlay itemizedoverlay) {
 
 		// We will return a short list
-		Log.d("getEvents()", "getEvents Called events");
-		Log.d("serverurl", getString(R.string.server_url));
+		Log.d("getEvents()", "getEvents Called events");//TODO change method names etc
 
 		SpecialGeoPoint geoPoint = new SpecialGeoPoint(
 				currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -155,8 +155,8 @@ public class GoogleMapsActivity extends MapActivity {
 		 * Start an Async task to get event from the server and put them on the
 		 * overlay
 		 */
-		ServerConnection serverConnection = new ServerConnection(
-				getString(R.string.server_url), geoPoint, itemizedoverlay,
+		GetEventLocationsTask serverConnection = new GetEventLocationsTask(
+				getString(R.string.fetch_locations_server_url), geoPoint, itemizedoverlay,
 				getApplicationContext());
 
 	}
