@@ -8,13 +8,17 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-public class EventItemizedOverlay extends ItemizedOverlay {
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+import eventlocator.android.data.GetEventsForLocationTask;
+
+public class EventItemizedOverlay extends
+		ItemizedOverlay<EventLocationOverlayItem> {
+	private ArrayList<EventLocationOverlayItem> mOverlays = new ArrayList<EventLocationOverlayItem>();
 	Context mContext;
 
 	public EventItemizedOverlay(Drawable defaultMarker) {
@@ -30,7 +34,7 @@ public class EventItemizedOverlay extends ItemizedOverlay {
 	}
 
 	@Override
-	protected OverlayItem createItem(int i) {
+	protected EventLocationOverlayItem createItem(int i) {
 		return mOverlays.get(i);
 	}
 
@@ -39,22 +43,23 @@ public class EventItemizedOverlay extends ItemizedOverlay {
 		return mOverlays.size();
 	}
 
-	public void addOverlay(OverlayItem overlay) {
+	public void addOverlay(EventLocationOverlayItem overlay) {
 		mOverlays.add(overlay);
 		populate();
 	}
 
 	@Override
 	protected boolean onTap(int index) {
-		OverlayItem item = mOverlays.get(index);
+		EventLocationOverlayItem item = mOverlays.get(index);
 		Dialog dialog = new Dialog(mContext);
 
 		dialog.setContentView(R.layout.event_dialog);
 		dialog.setTitle(item.getTitle());
-
-		TextView text = (TextView) dialog.findViewById(R.id.text);
-		text.setText(item.getSnippet() + item.getSnippet() + item.getSnippet() + item.getSnippet() + item.getSnippet() + item.getSnippet());
-		text.setMovementMethod(new ScrollingMovementMethod());
+ListView listView = (ListView) dialog.findViewById(R.id.event_list);
+//		TextView text = (TextView) dialog.findViewById(R.id.text);
+//		text.setText(item.getSnippet() + item.getSnippet() + item.getSnippet()
+//				+ item.getSnippet() + item.getSnippet() + item.getSnippet());
+//		text.setMovementMethod(new ScrollingMovementMethod());
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.advert_phd);
 		ImageView brandImage = (ImageView) dialog
@@ -62,6 +67,11 @@ public class EventItemizedOverlay extends ItemizedOverlay {
 		brandImage.setImageResource(R.drawable.uos_logo_vert_light);
 
 		dialog.show();
+
+		GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
+				mContext.getString(R.string.fetch_events_for_location_server_url),
+				item.getEventLocation(), listView, mContext);
+
 		return true;
 	}
 

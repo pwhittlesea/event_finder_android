@@ -4,9 +4,9 @@
     <string name="hello">Hello World, HelloGoogleMapsActivity!</string>
     <string name="app_name">Event Locator</string>
     <string name="locString">My Location</string>
-       <string name="fetch_events_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_events.php</string>
-        <string name="fetch_locations_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_locations.php</string>
-       <string name="refresh_string">Refresh</string>
-       
+    <string name="fetch_events_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_events.php</string>
+    <string name="fetch_events_for_location_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_events_for_location.php</string>
+    <string name="fetch_locations_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_locations.php</string>
+    <string name="refresh_string">Refresh</string>
 
 </resources>

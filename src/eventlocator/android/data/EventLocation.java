@@ -2,10 +2,10 @@ package eventlocator.android.data;
 
 public class EventLocation {
 
-	float lng;
-	float lat;
-	String label;
-	String place;
+	private float lng;
+	private float lat;
+	private String label;
+	private String place;
 
 	public float getLong() {
 		return lng;

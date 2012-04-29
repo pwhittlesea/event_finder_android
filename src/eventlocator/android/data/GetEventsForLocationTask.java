@@ -9,38 +9,42 @@ import org.codehaus.jackson.map.ObjectMapper;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 import eventlocator.android.EventItemizedOverlay;
+import eventlocator.android.R;
 
-public class ServerConnection {
+public class GetEventsForLocationTask {
 
-	EventItemizedOverlay itemizedoverlay;
 	Context context;
-
+	ListView listView;
 	/**
 	 * The class used by the activity to get the events
 	 * 
 	 * @param url
+	 * @param listView 
 	 * @param context
 	 */
-	public ServerConnection(String url, SpecialGeoPoint geoPoint,
-			EventItemizedOverlay itemizedoverlay, Context context) {
-		this.itemizedoverlay = itemizedoverlay;
+	public GetEventsForLocationTask(String url, EventLocation eventLocation, ListView listView, Context context) {
 		this.context = context;
-
-		String json = jsonFromObject(geoPoint);
-		System.out.println("geo json " + json);
-		json = "{\"geo\":" + json + "}";
+		this.listView = listView;
+		String json = "\"" + eventLocation.getPlace() +"\"";
+		json = "{\"place\":" + json + "}";
+		Log.d("jsonUrlBeforeEncode", json);
 		json = URLEncoder.encode(json);
 
-		System.out.println("server url" + url);
 
 		String jsonUrl = url + "?req=" + json;
-
+		Log.d("jsonUrl", jsonUrl);
 		new GetJSONTask().execute(jsonUrl, null, null);
 
 	}
@@ -53,7 +57,7 @@ public class ServerConnection {
 			ArrayList<Event> events = new ArrayList<Event>();
 			try {
 				jsonFromServer = JSONClient.connect(jsonUrl[0]);
-				Log.d("jsonFromServer", jsonFromServer);
+				Log.d("jsonFromServer", "fromServer: " + jsonFromServer);
 				JSONToObjects<Event, Events> jsonToObjects = new JSONToObjects<Event, Events>(
 						Event.class, Events.class);
 				jsonToObjects.init(jsonFromServer);
@@ -86,15 +90,19 @@ public class ServerConnection {
 			} else {
 
 			}
-			for (Event event : result) {
-				GeoPoint point = new GeoPoint((int) (event.getLat() * 1E6),
-						(int) (event.getLong() * 1E6));
-				OverlayItem overlayitem = new OverlayItem(point,
-						event.getLabel(), event.getDesc());
-				itemizedoverlay.addOverlay(overlayitem);
 
-			}
+			listView.setAdapter(new ArrayAdapter<Event>(context, R.layout.list_item, result));
+			listView.setOnItemClickListener(new OnItemClickListener() {
 
+				public void onItemClick(AdapterView<?> arg0, View view,
+						int pos, long id) {
+					Event event = (Event) arg0.getAdapter().getItem(pos);
+					   // When clicked, show a toast with the event description
+				      Toast.makeText(context, event.getDesc(),
+				          Toast.LENGTH_LONG).show();
+					
+				}
+			});
 		}
 	}
 

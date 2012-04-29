@@ -15,6 +15,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 import eventlocator.android.EventItemizedOverlay;
+import eventlocator.android.EventLocationOverlayItem;
 
 public class GetEventLocationsTask {
 
@@ -31,16 +32,14 @@ public class GetEventLocationsTask {
 			EventItemizedOverlay itemizedoverlay, Context context) {
 		this.itemizedoverlay = itemizedoverlay;
 		this.context = context;
-
 		String json = jsonFromObject(geoPoint);
-		System.out.println("geo json " + json);
+
 		json = "{\"geo\":" + json + "}";
+		Log.d("jsonUrlBeforeEncode", json);
 		json = URLEncoder.encode(json);
 
-		System.out.println("server url" + url);
-
 		String jsonUrl = url + "?req=" + json;
-
+		Log.d("jsonUrl", jsonUrl);
 		new GetJSONTask().execute(jsonUrl, null, null);
 
 	}
@@ -91,8 +90,9 @@ public class GetEventLocationsTask {
 				GeoPoint point = new GeoPoint(
 						(int) (eventLocation.getLat() * 1E6),
 						(int) (eventLocation.getLong() * 1E6));
-				OverlayItem overlayitem = new OverlayItem(point,
-						eventLocation.getLabel(), eventLocation.getPlace());
+				EventLocationOverlayItem overlayitem = new EventLocationOverlayItem(
+						point, eventLocation.getLabel(),
+						eventLocation.getPlace(), eventLocation);
 				itemizedoverlay.addOverlay(overlayitem);
 
 			}

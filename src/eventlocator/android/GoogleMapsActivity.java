@@ -19,7 +19,7 @@ import com.google.android.maps.MyLocationOverlay;
 
 import eventlocator.android.MyLocation.LocationResult;
 import eventlocator.android.data.GetEventLocationsTask;
-import eventlocator.android.data.ServerConnection;
+import eventlocator.android.data.GetEventsForLocationTask;
 import eventlocator.android.data.SpecialGeoPoint;
 
 public class GoogleMapsActivity extends MapActivity {

@@ -1,14 +1,15 @@
 package eventlocator.android.data;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Event {
-	String url;
-	float lng;
-	float lat;
-	String label;
-	String desc;
-	Date start;
-	Date end;
+	private String url;
+	private String label;
+	private String desc;
+	private Date start;
+	private Date end;
+	
 	public String getUrl() {
 		return url;
 	}
@@ -16,19 +17,6 @@ public class Event {
 		this.url = url;
 	}
 	
-	
-	public float getLong() {
-		return lng;
-	}
-	public void setLong(float lng) {
-		this.lng = lng;
-	}
-	public float getLat() {
-		return lat;
-	}
-	public void setLat(float lat) {
-		this.lat = lat;
-	}
 	public String getLabel() {
 		return label;
 	}
@@ -49,7 +37,8 @@ public class Event {
 		this.end = end;
 	}
 	public String toString(){
-		return url + " " + lng + " " + lat + " " +label + " " + start + " " + end;
+		 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E d MMM");
+		return label + " - " + simpleDateformat.format(getStart()); //url + " " +label + " " + start + " " + end + " " + desc;
 	}
 	public String getDesc() {
 		return desc;
