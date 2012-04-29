@@ -90,7 +90,7 @@ public class GoogleMapsActivity extends MapActivity {
 											(int) (currentLocation
 													.getLongitude() * 1E6)));
 							mapView.getController().setZoom(15);
-							refreshEvents();
+							refreshEventLocations();
 							firstFoundLocation = false;
 						}
 					}
@@ -121,7 +121,7 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocationOverlay.enableMyLocation();
 	};
 
-	private void refreshEvents() {
+	private void refreshEventLocations() {
 		myLocation(); // Center on location used for checking events
 		Log.d("refreshEvents", "refreshing events");
 		if (!mapView.getOverlays().isEmpty()) {
@@ -137,14 +137,14 @@ public class GoogleMapsActivity extends MapActivity {
 		if (currentLocation != null) {
 			mapView.getOverlays().add(itemizedoverlay);
 			System.out.println("get event");
-			getEvents(itemizedoverlay);
+			getEventLocations(itemizedoverlay);
 			System.out.println("add itemased overlay");
 			
 		}
 
 	}
 
-	private void getEvents(EventItemizedOverlay itemizedoverlay) {
+	private void getEventLocations(EventItemizedOverlay itemizedoverlay) {
 
 		// We will return a short list
 		Log.d("getEvents()", "getEvents Called events");//TODO change method names etc
@@ -195,7 +195,7 @@ public class GoogleMapsActivity extends MapActivity {
 			myLocation();
 			return true;
 		case R.id.refresh_events:
-			refreshEvents();
+			refreshEventLocations();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

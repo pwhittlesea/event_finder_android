@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -53,13 +54,13 @@ public class EventItemizedOverlay extends
 		EventLocationOverlayItem item = mOverlays.get(index);
 		Dialog dialog = new Dialog(mContext);
 
-		dialog.setContentView(R.layout.event_dialog);
+		dialog.setContentView(R.layout.location_dialog);
 		dialog.setTitle(item.getTitle());
-ListView listView = (ListView) dialog.findViewById(R.id.event_list);
-//		TextView text = (TextView) dialog.findViewById(R.id.text);
-//		text.setText(item.getSnippet() + item.getSnippet() + item.getSnippet()
-//				+ item.getSnippet() + item.getSnippet() + item.getSnippet());
-//		text.setMovementMethod(new ScrollingMovementMethod());
+		ListView listView = (ListView) dialog.findViewById(R.id.event_list);
+		GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
+				mContext.getString(R.string.fetch_events_for_location_server_url),
+				item.getEventLocation(), listView, mContext);
+
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.advert_phd);
 		ImageView brandImage = (ImageView) dialog
@@ -68,9 +69,11 @@ ListView listView = (ListView) dialog.findViewById(R.id.event_list);
 
 		dialog.show();
 
-		GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
-				mContext.getString(R.string.fetch_events_for_location_server_url),
-				item.getEventLocation(), listView, mContext);
+		LinearLayout layoutRoot = (LinearLayout) dialog
+				.findViewById(R.id.layout_root);
+		ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(
+				dialog);
+		layoutRoot.setOnTouchListener(activitySwipeDetector);
 
 		return true;
 	}

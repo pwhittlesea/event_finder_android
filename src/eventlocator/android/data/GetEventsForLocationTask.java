@@ -6,13 +6,18 @@ import java.util.ArrayList;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
+import eventlocator.android.ActivitySwipeDetector;
 import eventlocator.android.EventItemizedOverlay;
 import eventlocator.android.R;
 
@@ -27,21 +33,22 @@ public class GetEventsForLocationTask {
 
 	Context context;
 	ListView listView;
+
 	/**
 	 * The class used by the activity to get the events
 	 * 
 	 * @param url
-	 * @param listView 
+	 * @param listView
 	 * @param context
 	 */
-	public GetEventsForLocationTask(String url, EventLocation eventLocation, ListView listView, Context context) {
+	public GetEventsForLocationTask(String url, EventLocation eventLocation,
+			ListView listView, Context context) {
 		this.context = context;
 		this.listView = listView;
-		String json = "\"" + eventLocation.getPlace() +"\"";
+		String json = "\"" + eventLocation.getPlace() + "\"";
 		json = "{\"place\":" + json + "}";
 		Log.d("jsonUrlBeforeEncode", json);
 		json = URLEncoder.encode(json);
-
 
 		String jsonUrl = url + "?req=" + json;
 		Log.d("jsonUrl", jsonUrl);
@@ -91,16 +98,37 @@ public class GetEventsForLocationTask {
 
 			}
 
-			listView.setAdapter(new ArrayAdapter<Event>(context, R.layout.list_item, result));
+			listView.setAdapter(new ArrayAdapter<Event>(context,
+					R.layout.list_item, result));
 			listView.setOnItemClickListener(new OnItemClickListener() {
 
 				public void onItemClick(AdapterView<?> arg0, View view,
 						int pos, long id) {
 					Event event = (Event) arg0.getAdapter().getItem(pos);
-					   // When clicked, show a toast with the event description
-				      Toast.makeText(context, event.getDesc(),
-				          Toast.LENGTH_LONG).show();
+					Dialog dialog = new Dialog(context);
 					
+					dialog.setContentView(R.layout.event_dialog);
+					dialog.setTitle(event.getLabel());
+					
+					ImageView image = (ImageView) dialog
+							.findViewById(R.id.image);
+					image.setImageResource(R.drawable.advert_phd);
+					ImageView brandImage = (ImageView) dialog
+							.findViewById(R.id.brand_image);
+					brandImage.setImageResource(R.drawable.uos_logo_vert_light);
+					TextView textView = (TextView) dialog
+							.findViewById(R.id.event_text);
+					textView.setText(event.getDesc() + "\n Event Start:" + event.getStart()
+							+ "\n Event End:" + event.getEnd());
+					textView.setMovementMethod(new ScrollingMovementMethod());
+					
+					LinearLayout layoutRoot = (LinearLayout) dialog
+							.findViewById(R.id.layout_root);
+					ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(dialog);
+					layoutRoot.setOnTouchListener(activitySwipeDetector);
+					dialog.show();
+					
+
 				}
 			});
 		}
