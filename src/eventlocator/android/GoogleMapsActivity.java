@@ -229,7 +229,7 @@ public class GoogleMapsActivity extends MapActivity {
 	 */
 	protected void showSplashScreen() {
 	    mSplashDialog = new Dialog(this, R.style.SplashScreen);
-	    //mSplashDialog.setContentView(R.layout.splashscreen);
+	    mSplashDialog.setContentView(R.layout.splashscreen);
 	    mSplashDialog.setCancelable(false);
 	    mSplashDialog.show();
 	 
