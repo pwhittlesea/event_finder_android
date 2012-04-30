@@ -48,7 +48,7 @@ public class JSONClient {
 
 	public static String connect(String url) throws Exception {
 		String result = "";
-		final int timeout = 5000;
+		final int timeout = 60000;
 
 		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, timeout);

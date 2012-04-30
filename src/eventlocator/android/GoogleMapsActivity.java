@@ -1,6 +1,7 @@
 package eventlocator.android;
 
 import android.app.Dialog;
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -228,16 +229,19 @@ public class GoogleMapsActivity extends MapActivity {
 	 * Shows the splash screen over the full Activity
 	 */
 	protected void showSplashScreen() {
-	    mSplashDialog = new Dialog(this, R.style.SplashScreen);
+	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
+		mSplashDialog = new Dialog(this, R.style.SplashScreen);
 	    mSplashDialog.setContentView(R.layout.splashscreen);
-	    mSplashDialog.setCancelable(false);
-	    mSplashDialog.show();
+	    mSplashDialog.setCancelable(false);    
+	    mSplashDialog.show();  
 	 
 	    // Set Runnable to remove splash screen just in case
 	    final Handler handler = new Handler();
 	    handler.postDelayed(new Runnable() {
 	      public void run() {
 	        removeSplashScreen();
+	        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 	      }
 	    }, 3000);
 	}

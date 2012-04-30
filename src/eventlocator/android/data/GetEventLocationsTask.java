@@ -21,6 +21,7 @@ public class GetEventLocationsTask {
 
 	EventItemizedOverlay itemizedoverlay;
 	Context context;
+	String toastErrorText = "No Events available";
 
 	/**
 	 * The class used by the activity to get the events
@@ -60,15 +61,18 @@ public class GetEventLocationsTask {
 				eventLocations = jsonToObjects.findAll();
 
 				Log.d("getEventLocations", "Found " + eventLocations.size());
+				
+				if (eventLocations.size() > 150) {
+					subList.addAll(eventLocations.subList(0, 150));
+				} else {
+					return eventLocations;
+				}
 			} catch (Exception e1) {
 				Log.e("getEvents()", "Couldn't get events from server");
+				toastErrorText = "No network connection available";
 				e1.printStackTrace();
 			}
-			if (eventLocations.size() > 150) {
-				subList.addAll(eventLocations.subList(0, 150));
-			} else {
-				return eventLocations;
-			}
+			
 			return subList;
 		}
 
@@ -79,7 +83,7 @@ public class GetEventLocationsTask {
 		protected void onPostExecute(ArrayList<EventLocation> result) {
 
 			if (result.size() == 0) {
-				Log.d("getEventLocations", "No Events available");
+				Log.d("getEventLocations", toastErrorText);
 				Toast.makeText(context, "No events near your location",
 						Toast.LENGTH_LONG).show();
 
