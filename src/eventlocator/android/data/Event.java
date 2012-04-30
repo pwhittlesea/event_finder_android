@@ -37,8 +37,8 @@ public class Event {
 		this.end = end;
 	}
 	public String toString(){
-		 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E d MMM");
-		return label + " - " + simpleDateformat.format(getStart()); //url + " " +label + " " + start + " " + end + " " + desc;
+		 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E dd MMM HH:mm");
+		return label + "\n - " + simpleDateformat.format(getStart()); //url + " " +label + " " + start + " " + end + " " + desc;
 	}
 	public String getDesc() {
 		return desc;

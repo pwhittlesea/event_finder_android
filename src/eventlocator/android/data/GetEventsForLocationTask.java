@@ -2,6 +2,7 @@ package eventlocator.android.data;
 
 import java.io.StringWriter;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -113,9 +114,11 @@ public class GetEventsForLocationTask {
 
 					TextView textView = (TextView) dialog
 							.findViewById(R.id.event_text);
-					textView.setText(event.getDesc() + "\n Event Start:"
-							+ event.getStart() + "\n Event End:"
-							+ event.getEnd());
+					 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E dd MMM HH:mm");
+					
+					textView.setText(event.getDesc() + "\n \n Event Start: "
+							+ simpleDateformat.format(event.getStart()) + "\n \n Event End: "
+							+ simpleDateformat.format(event.getEnd()));
 					textView.setMovementMethod(new ScrollingMovementMethod());
 
 					LinearLayout layoutRoot = (LinearLayout) dialog
