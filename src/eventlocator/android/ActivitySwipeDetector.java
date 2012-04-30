@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 /*
  * From http://stackoverflow.com/questions/937313/android-basic-gesture-detection
+ * Allows the user to "swipe away" Dialogs
  */
 public class ActivitySwipeDetector implements View.OnTouchListener {
 

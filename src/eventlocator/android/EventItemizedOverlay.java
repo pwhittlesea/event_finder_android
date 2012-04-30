@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.method.ScrollingMovementMethod;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -60,14 +61,13 @@ public class EventItemizedOverlay extends
 		GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
 				mContext.getString(R.string.fetch_events_for_location_server_url),
 				item.getEventLocation(), listView, mContext);
-
-		ImageView image = (ImageView) dialog.findViewById(R.id.image);
-		image.setImageResource(R.drawable.advert_phd);
-		ImageView brandImage = (ImageView) dialog
-				.findViewById(R.id.brand_image);
-		brandImage.setImageResource(R.drawable.uos_logo_vert_light);
-
-		dialog.show();
+		 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+		    lp.copyFrom(dialog.getWindow().getAttributes());
+		    lp.width = WindowManager.LayoutParams.FILL_PARENT;
+		    lp.height = WindowManager.LayoutParams.FILL_PARENT;
+		    dialog.show();
+		    dialog.getWindow().setAttributes(lp);
+		
 
 		LinearLayout layoutRoot = (LinearLayout) dialog
 				.findViewById(R.id.layout_root);

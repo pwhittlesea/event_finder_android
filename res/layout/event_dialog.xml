@@ -9,6 +9,7 @@
                android:layout_width="wrap_content"
                android:layout_height="fill_parent"
                android:layout_marginRight="3dp"
+               android:src="@drawable/ox_logo_vert"
                />
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/layout_event"
@@ -16,6 +17,7 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:padding="10dp"
+              
               >
               <TextView android:id="@+id/event_text"          
               android:layout_width="wrap_content"
@@ -29,6 +31,7 @@
                android:layout_height="fill_parent"
                android:layout_marginRight="10dp"
                android:layout_weight="0.8"
+               android:src="@drawable/advert_oxtalent"
                />
     
     </LinearLayout>

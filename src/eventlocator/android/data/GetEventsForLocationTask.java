@@ -13,6 +13,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -106,28 +107,28 @@ public class GetEventsForLocationTask {
 						int pos, long id) {
 					Event event = (Event) arg0.getAdapter().getItem(pos);
 					Dialog dialog = new Dialog(context);
-					
+
 					dialog.setContentView(R.layout.event_dialog);
 					dialog.setTitle(event.getLabel());
-					
-					ImageView image = (ImageView) dialog
-							.findViewById(R.id.image);
-					image.setImageResource(R.drawable.advert_phd);
-					ImageView brandImage = (ImageView) dialog
-							.findViewById(R.id.brand_image);
-					brandImage.setImageResource(R.drawable.uos_logo_vert_light);
+
 					TextView textView = (TextView) dialog
 							.findViewById(R.id.event_text);
-					textView.setText(event.getDesc() + "\n Event Start:" + event.getStart()
-							+ "\n Event End:" + event.getEnd());
+					textView.setText(event.getDesc() + "\n Event Start:"
+							+ event.getStart() + "\n Event End:"
+							+ event.getEnd());
 					textView.setMovementMethod(new ScrollingMovementMethod());
-					
+
 					LinearLayout layoutRoot = (LinearLayout) dialog
 							.findViewById(R.id.layout_root);
-					ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(dialog);
+					ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(
+							dialog);
 					layoutRoot.setOnTouchListener(activitySwipeDetector);
+					WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+					lp.copyFrom(dialog.getWindow().getAttributes());
+					lp.width = WindowManager.LayoutParams.FILL_PARENT;
+					lp.height = WindowManager.LayoutParams.FILL_PARENT;
 					dialog.show();
-					
+					dialog.getWindow().setAttributes(lp);
 
 				}
 			});
