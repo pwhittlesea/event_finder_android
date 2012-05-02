@@ -198,11 +198,21 @@ public class GoogleMapsActivity extends MapActivity {
 		case R.id.refresh_events:
 			refreshEventLocations();
 			return true;
+		case R.id.list_view:
+			showListView();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 	
+	private void showListView() {
+		Dialog dialog = new Dialog(this );
+		dialog.setContentView(R.layout.filter_locations_dialog);
+		dialog.show();
+		
+	}
+
 	@Override
 	public Object onRetainNonConfigurationInstance() {
 	    MyStateSaver data = new MyStateSaver();
