@@ -18,26 +18,34 @@ public final class R {
         public static final int ic_launcher=0x7f020004;
         public static final int ic_menu_mylocation=0x7f020005;
         public static final int ic_menu_refresh=0x7f020006;
-        public static final int iconold=0x7f020007;
-        public static final int ox_logo_vert=0x7f020008;
-        public static final int splash_soton=0x7f020009;
-        public static final int uos_logo=0x7f02000a;
-        public static final int uos_logo_vert=0x7f02000b;
-        public static final int uos_logo_vert_light=0x7f02000c;
+        public static final int ic_menu_show_list=0x7f020007;
+        public static final int iconold=0x7f020008;
+        public static final int map_pin_1=0x7f020009;
+        public static final int map_pin_2=0x7f02000a;
+        public static final int map_pin_3=0x7f02000b;
+        public static final int map_pin_4=0x7f02000c;
+        public static final int map_pin_5=0x7f02000d;
+        public static final int map_pin_5plus=0x7f02000e;
+        public static final int ox_logo_vert=0x7f02000f;
+        public static final int splash_soton=0x7f020010;
+        public static final int uos_logo=0x7f020011;
+        public static final int uos_logo_vert=0x7f020012;
+        public static final int uos_logo_vert_light=0x7f020013;
     }
     public static final class id {
         public static final int brand_image=0x7f070001;
-        public static final int centre_loc=0x7f070009;
-        public static final int event_list=0x7f070007;
+        public static final int centre_loc=0x7f07000a;
+        public static final int event_list=0x7f070008;
         public static final int event_text=0x7f070003;
-        public static final int filtered_layout=0x7f070005;
-        public static final int filtered_list=0x7f070006;
+        public static final int filtered_layout=0x7f070006;
+        public static final int filtered_list=0x7f070007;
         public static final int image=0x7f070004;
         public static final int layout_event=0x7f070002;
         public static final int layout_root=0x7f070000;
-        public static final int list_view=0x7f07000b;
-        public static final int mapview=0x7f070008;
-        public static final int refresh_events=0x7f07000a;
+        public static final int list_view=0x7f07000c;
+        public static final int location_list_layout_root=0x7f070005;
+        public static final int mapview=0x7f070009;
+        public static final int refresh_events=0x7f07000b;
     }
     public static final class layout {
         public static final int event_dialog=0x7f030000;

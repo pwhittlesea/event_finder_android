@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -19,6 +21,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
 import eventlocator.android.MyLocation.LocationResult;
+import eventlocator.android.data.Event;
+import eventlocator.android.data.EventLocation;
+import eventlocator.android.data.EventLocations;
 import eventlocator.android.data.GetEventLocationsTask;
 import eventlocator.android.data.GetEventsForLocationTask;
 import eventlocator.android.data.SpecialGeoPoint;
@@ -32,17 +37,17 @@ public class GoogleMapsActivity extends MapActivity {
 	MapView mapView;
 	EventItemizedOverlay itemizedoverlay;
 	Drawable eventPin;
+	private EventLocations currentEventLocations;
 
 	boolean firstFoundLocation = true;
-	
-	protected Dialog mSplashDialog;
 
+	protected Dialog mSplashDialog;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-			    
+		currentEventLocations = new EventLocations();
 		System.out.println("onCreate(); called");
 		setContentView(R.layout.main);
 		mapView = (MapView) findViewById(R.id.mapview);
@@ -50,29 +55,25 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
 		myLocation = new MyLocation();
-		
-		 MyStateSaver data = (MyStateSaver) getLastNonConfigurationInstance();
-		    if (data != null) {
-		        // Show splash screen if still loading
-		        if (data.showSplashScreen) {
-		            showSplashScreen();
-		        }
-		        setContentView(findViewById(R.id.mapview));        
-		 
-		        // Rebuild your UI with your saved state here
-		    } else {
-		        showSplashScreen();
-		        setContentView((findViewById(R.id.mapview)));
-		        // Do your heavy loading here on a background thread
-		    }
-		
-		eventPin = this.getResources().getDrawable(
-				R.drawable.ic_event_pin);
-		
-		
-		itemizedoverlay = new EventItemizedOverlay(
-				eventPin, this);
 
+		MyStateSaver data = (MyStateSaver) getLastNonConfigurationInstance();
+		if (data != null) {
+			// Show splash screen if still loading
+			if (data.showSplashScreen) {
+				showSplashScreen();
+			}
+			setContentView(findViewById(R.id.mapview));
+
+			// Rebuild your UI with your saved state here
+		} else {
+			showSplashScreen();
+			setContentView((findViewById(R.id.mapview)));
+			// Do your heavy loading here on a background thread
+		}
+
+		eventPin = this.getResources().getDrawable(R.drawable.map_pin_1);
+
+		itemizedoverlay = new EventItemizedOverlay(eventPin, this);
 
 		locationResult = new LocationResult() {
 			@Override
@@ -80,7 +81,7 @@ public class GoogleMapsActivity extends MapActivity {
 				// This location could still be null!?
 				runOnUiThread(new Runnable() {
 					public void run() {
-						//Log.d("gotLocation()", "Location: " + location);
+						// Log.d("gotLocation()", "Location: " + location);
 						currentLocation = location;
 						// TODO Location-to-GeoPoint method - YES WE NEED IT
 						// MICHAEL
@@ -101,10 +102,12 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocation.getLocation(this, locationResult);
 
 	}
-	
-	// override on screen rotate so onCreate is not called again with every rotate
-	@Override 
-	public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+
+	// override on screen rotate so onCreate is not called again with every
+	// rotate
+	@Override
+	public void onConfigurationChanged(
+			android.content.res.Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	};
 
@@ -128,19 +131,18 @@ public class GoogleMapsActivity extends MapActivity {
 		if (!mapView.getOverlays().isEmpty()) {
 			System.out.println("clearing overlays");
 			mapView.getOverlays().clear();
-			itemizedoverlay = new EventItemizedOverlay(
-					eventPin, this);
-			
+			itemizedoverlay = new EventItemizedOverlay(eventPin, this);
+
 		}
 		System.out.println("add my location overlay");
 		mapView.getOverlays().add(myLocationOverlay);
-	
+
 		if (currentLocation != null) {
 			mapView.getOverlays().add(itemizedoverlay);
 			System.out.println("get event");
 			getEventLocations(itemizedoverlay);
 			System.out.println("add itemased overlay");
-			
+
 		}
 
 	}
@@ -157,7 +159,7 @@ public class GoogleMapsActivity extends MapActivity {
 		 * overlay
 		 */
 		GetEventLocationsTask serverConnection = new GetEventLocationsTask(
-				getString(R.string.fetch_locations_server_url), geoPoint, itemizedoverlay,
+				getString(R.string.fetch_locations_server_url), geoPoint, itemizedoverlay, currentEventLocations,
 				getApplicationContext());
 
 	}
@@ -205,59 +207,72 @@ public class GoogleMapsActivity extends MapActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void showListView() {
-		Dialog dialog = new Dialog(this );
-		dialog.setContentView(R.layout.filter_locations_dialog);
-		dialog.show();
 		
+		if(currentEventLocations.size() == 0){
+			
+			Toast.makeText(getApplicationContext(), "No events have been loaded yet, try refreshing", Toast.LENGTH_SHORT).show();
+			
+		} else {
+			Dialog dialog = new Dialog(this);
+			dialog.setContentView(R.layout.filter_locations_dialog);
+			dialog.setTitle("Location List");
+			ListView list = (ListView) dialog.findViewById(R.id.filtered_list);
+			
+			list.setAdapter(new ArrayAdapter<EventLocation>(getApplicationContext(),
+					R.layout.list_item, currentEventLocations));
+			dialog.show();
+		}
+		
+
 	}
 
 	@Override
 	public Object onRetainNonConfigurationInstance() {
-	    MyStateSaver data = new MyStateSaver();
-	    // Save your important data here
-	 
-	    if (mSplashDialog != null) {
-	        data.showSplashScreen = true;
-	        removeSplashScreen();
-	    }
-	    return data;
+		MyStateSaver data = new MyStateSaver();
+		// Save your important data here
+
+		if (mSplashDialog != null) {
+			data.showSplashScreen = true;
+			removeSplashScreen();
+		}
+		return data;
 	}
-	 
+
 	/**
 	 * Removes the Dialog that displays the splash screen
 	 */
 	protected void removeSplashScreen() {
-	    if (mSplashDialog != null) {
-	        mSplashDialog.dismiss();
-	        mSplashDialog = null;
-	    }
+		if (mSplashDialog != null) {
+			mSplashDialog.dismiss();
+			mSplashDialog = null;
+		}
 	}
-	 
+
 	/**
 	 * Shows the splash screen over the full Activity
 	 */
 	protected void showSplashScreen() {
-	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 		mSplashDialog = new Dialog(this, R.style.SplashScreen);
-	    mSplashDialog.setContentView(R.layout.splashscreen);
-	    mSplashDialog.setCancelable(false);    
-	    mSplashDialog.show();  
-	 
-	    // Set Runnable to remove splash screen just in case
-	    final Handler handler = new Handler();
-	    handler.postDelayed(new Runnable() {
-	      public void run() {
-	        removeSplashScreen();
-	        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-	      }
-	    }, 3000);
+		mSplashDialog.setContentView(R.layout.splashscreen);
+		mSplashDialog.setCancelable(false);
+		mSplashDialog.show();
+
+		// Set Runnable to remove splash screen just in case
+		final Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			public void run() {
+				removeSplashScreen();
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+			}
+		}, 3000);
 	}
 
 	private class MyStateSaver {
-	    public boolean showSplashScreen = false;
-	    // Your other important fields here
+		public boolean showSplashScreen = false;
+		// Your other important fields here
 	}
 }

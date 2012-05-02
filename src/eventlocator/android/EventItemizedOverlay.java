@@ -20,13 +20,13 @@ import eventlocator.android.data.GetEventsForLocationTask;
 
 public class EventItemizedOverlay extends
 		ItemizedOverlay<EventLocationOverlayItem> {
-	private ArrayList<EventLocationOverlayItem> mOverlays = new ArrayList<EventLocationOverlayItem>();
 	Context mContext;
+	private ArrayList<EventLocationOverlayItem> mOverlays = new ArrayList<EventLocationOverlayItem>();
+	
 
 	public EventItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
 		populate();
-
 	}
 
 	public EventItemizedOverlay(Drawable defaultMarker, Context context) {
@@ -47,6 +47,9 @@ public class EventItemizedOverlay extends
 
 	public void addOverlay(EventLocationOverlayItem overlay) {
 		mOverlays.add(overlay);
+//		Drawable drawable = mContext.getResources().getDrawable(R.drawable.map_pin_2);
+//		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//		overlay.setMarker(mContext.getResources().getDrawable(R.drawable.map_pin_2));
 		populate();
 	}
 

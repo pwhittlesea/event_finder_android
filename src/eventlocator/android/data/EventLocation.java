@@ -32,7 +32,7 @@ public class EventLocation {
 	}
 
 	public String toString() {
-		return lng + " " + lat + " " + label + " " + place;
+		return label;
 	}
 
 	public String getPlace() {

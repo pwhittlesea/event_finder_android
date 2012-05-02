@@ -22,16 +22,20 @@ public class GetEventLocationsTask {
 	EventItemizedOverlay itemizedoverlay;
 	Context context;
 	String toastErrorText = "No Events available";
+	EventLocations currentEventLocations;
 
 	/**
 	 * The class used by the activity to get the events
 	 * 
 	 * @param url
+	 * @param currentEventLocations
 	 * @param context
 	 */
 	public GetEventLocationsTask(String url, SpecialGeoPoint geoPoint,
-			EventItemizedOverlay itemizedoverlay, Context context) {
+			EventItemizedOverlay itemizedoverlay,
+			EventLocations currentEventLocations, Context context) {
 		this.itemizedoverlay = itemizedoverlay;
+		this.currentEventLocations = currentEventLocations;
 		this.context = context;
 		String json = jsonFromObject(geoPoint);
 
@@ -61,7 +65,7 @@ public class GetEventLocationsTask {
 				eventLocations = jsonToObjects.findAll();
 
 				Log.d("getEventLocations", "Found " + eventLocations.size());
-				
+
 				if (eventLocations.size() > 150) {
 					subList.addAll(eventLocations.subList(0, 150));
 				} else {
@@ -72,7 +76,7 @@ public class GetEventLocationsTask {
 				toastErrorText = "No network connection available";
 				e1.printStackTrace();
 			}
-			
+
 			return subList;
 		}
 
@@ -88,7 +92,7 @@ public class GetEventLocationsTask {
 						Toast.LENGTH_LONG).show();
 
 			} else {
-
+				currentEventLocations.addAll(result);
 			}
 			for (EventLocation eventLocation : result) {
 				GeoPoint point = new GeoPoint(
@@ -96,7 +100,7 @@ public class GetEventLocationsTask {
 						(int) (eventLocation.getLong() * 1E6));
 				EventLocationOverlayItem overlayitem = new EventLocationOverlayItem(
 						point, eventLocation.getLabel(),
-						eventLocation.getPlace(), eventLocation);
+						eventLocation.getPlace(), eventLocation, context);
 				itemizedoverlay.addOverlay(overlayitem);
 
 			}
