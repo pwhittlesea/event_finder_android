@@ -47,9 +47,6 @@ public class EventItemizedOverlay extends
 
 	public void addOverlay(EventLocationOverlayItem overlay) {
 		mOverlays.add(overlay);
-//		Drawable drawable = mContext.getResources().getDrawable(R.drawable.map_pin_2);
-//		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//		overlay.setMarker(mContext.getResources().getDrawable(R.drawable.map_pin_2));
 		populate();
 	}
 
