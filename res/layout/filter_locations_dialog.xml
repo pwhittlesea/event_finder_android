@@ -1,31 +1,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/location_list_layout_root"
-              android:orientation="horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:padding="3dp"
-              >
-    <ImageView android:id="@+id/brand_image"
-               android:layout_width="wrap_content"
-               android:layout_height="fill_parent"
-               android:layout_marginRight="3dp"
-               android:src="@drawable/uos_logo_vert_light"
-               />
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/filtered_layout"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:padding="10dp"
-              >
-              <ListView android:id="@+id/filtered_list"          
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:textColor="#FFF"
-              android:scrollbars = "vertical"
-              android:layout_weight="0.2"
-              />
-              
-    
+    android:id="@+id/location_list_layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:padding="3dp" >
+
+    <ImageView
+        android:id="@+id/brand_image"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginRight="3dp"
+        android:src="@drawable/uos_logo_vert_light" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/filtered_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <!-- Pretty hint text, and maxLines -->
+
+        <EditText
+            android:id="@+id/filter_text_box"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="type to filter"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <ListView
+            android:id="@+id/filtered_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.2"
+            android:scrollbars="vertical"
+            android:textColor="#FFF" />
     </LinearLayout>
+
 </LinearLayout>

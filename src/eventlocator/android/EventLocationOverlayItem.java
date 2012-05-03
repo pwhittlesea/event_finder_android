@@ -16,7 +16,6 @@ public class EventLocationOverlayItem extends OverlayItem {
 	public EventLocationOverlayItem(GeoPoint point, String title,
 			String snippet, EventLocation eventLocation, Context context) {
 		super(point, title, snippet);
-		System.out.println("const");
 		this.eventLocation = eventLocation;
 		Drawable drawable;
 

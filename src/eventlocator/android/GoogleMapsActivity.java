@@ -1,17 +1,30 @@
 package eventlocator.android;
 
+import java.text.SimpleDateFormat;
+
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -38,6 +51,9 @@ public class GoogleMapsActivity extends MapActivity {
 	EventItemizedOverlay itemizedoverlay;
 	Drawable eventPin;
 	private EventLocations currentEventLocations;
+	private EditText filterText = null;
+	ArrayAdapter<EventLocation> filterListAdapter = null;
+	Context contex = this;
 
 	boolean firstFoundLocation = true;
 
@@ -124,6 +140,11 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocationOverlay.enableCompass();
 		myLocationOverlay.enableMyLocation();
 	};
+	@Override
+	protected void onDestroy() {
+	    super.onDestroy();
+	    filterText.removeTextChangedListener(filterTextWatcher);
+	}
 
 	private void refreshEventLocations() {
 		myLocation(); // Center on location used for checking events
@@ -208,21 +229,93 @@ public class GoogleMapsActivity extends MapActivity {
 		}
 	}
 
-	private void showListView() {
+	
+	private TextWatcher filterTextWatcher = new TextWatcher() {
+		
+		
+
+	    public void afterTextChanged(Editable s) {
+	    }
+
+	    public void beforeTextChanged(CharSequence s, int start, int count,
+	            int after) {
+	    }
+
+	    public void onTextChanged(CharSequence s, int start, int before,
+	            int count) {
+	        filterListAdapter.getFilter().filter(s);
+	    }
+
+	};
+	
+private void showListView() {
 		
 		if(currentEventLocations.size() == 0){
-			
 			Toast.makeText(getApplicationContext(), "No events have been loaded yet, try refreshing", Toast.LENGTH_SHORT).show();
-			
 		} else {
 			Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.filter_locations_dialog);
 			dialog.setTitle("Location List");
-			ListView list = (ListView) dialog.findViewById(R.id.filtered_list);
 			
-			list.setAdapter(new ArrayAdapter<EventLocation>(getApplicationContext(),
-					R.layout.list_item, currentEventLocations));
+			 filterText = (EditText) dialog.findViewById(R.id.filter_text_box);
+			
+			    filterText.addTextChangedListener(filterTextWatcher);
+			    
+				LinearLayout layoutRoot = (LinearLayout) dialog
+						.findViewById(R.id.location_list_layout_root);
+		
+			ListView list = (ListView) dialog.findViewById(R.id.filtered_list);
+			filterListAdapter = new ArrayAdapter<EventLocation>(getApplicationContext(),
+					R.layout.list_item, currentEventLocations);
+			list.setAdapter(filterListAdapter);
+			 
+			list.setOnItemClickListener(new OnItemClickListener() {
+
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int pos, long id) {
+					EventLocation eventLocation = (EventLocation) arg0.getAdapter().getItem(pos);
+					Dialog dialog = new Dialog(contex);
+		
+					dialog.setContentView(R.layout.location_dialog);
+					dialog.setTitle(eventLocation.getLabel());
+					ListView listView = (ListView) dialog.findViewById(R.id.event_list);
+					GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
+							contex.getString(R.string.fetch_events_for_location_server_url),
+							eventLocation, listView, contex);
+					 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+					    lp.copyFrom(dialog.getWindow().getAttributes());
+					    lp.width = WindowManager.LayoutParams.FILL_PARENT;
+					    lp.height = WindowManager.LayoutParams.FILL_PARENT;
+					    dialog.show();
+					    dialog.getWindow().setAttributes(lp);
+					
+
+					LinearLayout layoutRoot = (LinearLayout) dialog
+							.findViewById(R.id.layout_root);
+					ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(
+							dialog);
+					layoutRoot.setOnTouchListener(activitySwipeDetector);
+
+					
+				}
+			});
+			
+			
+			
+			
+			ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(
+					dialog);
+			layoutRoot.setOnTouchListener(activitySwipeDetector);
+			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+			lp.copyFrom(dialog.getWindow().getAttributes());
+			lp.width = WindowManager.LayoutParams.FILL_PARENT;
+			lp.height = WindowManager.LayoutParams.FILL_PARENT;
 			dialog.show();
+			dialog.getWindow().setAttributes(lp);
+			
+			
+			
+			
 		}
 		
 
