@@ -143,7 +143,9 @@ public class GoogleMapsActivity extends MapActivity {
 	@Override
 	protected void onDestroy() {
 	    super.onDestroy();
-	    filterText.removeTextChangedListener(filterTextWatcher);
+	    if( filterText != null){//remove listener only if list view has been viewed.
+	    	filterText.removeTextChangedListener(filterTextWatcher);
+	    }
 	}
 
 	private void refreshEventLocations() {
