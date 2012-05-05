@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.text.method.ScrollingMovementMethod;
 import android.view.WindowManager;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 import eventlocator.android.data.GetEventsForLocationTask;
@@ -22,7 +24,6 @@ public class EventItemizedOverlay extends
 		ItemizedOverlay<EventLocationOverlayItem> {
 	Context mContext;
 	private ArrayList<EventLocationOverlayItem> mOverlays = new ArrayList<EventLocationOverlayItem>();
-	
 
 	public EventItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
@@ -61,13 +62,12 @@ public class EventItemizedOverlay extends
 		GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
 				mContext.getString(R.string.fetch_events_for_location_server_url),
 				item.getEventLocation(), listView, mContext);
-		 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-		    lp.copyFrom(dialog.getWindow().getAttributes());
-		    lp.width = WindowManager.LayoutParams.FILL_PARENT;
-		    lp.height = WindowManager.LayoutParams.FILL_PARENT;
-		    dialog.show();
-		    dialog.getWindow().setAttributes(lp);
-		
+		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+		lp.copyFrom(dialog.getWindow().getAttributes());
+		lp.width = WindowManager.LayoutParams.FILL_PARENT;
+		lp.height = WindowManager.LayoutParams.FILL_PARENT;
+		dialog.show();
+		dialog.getWindow().setAttributes(lp);
 
 		LinearLayout layoutRoot = (LinearLayout) dialog
 				.findViewById(R.id.layout_root);
@@ -76,6 +76,13 @@ public class EventItemizedOverlay extends
 		layoutRoot.setOnTouchListener(activitySwipeDetector);
 
 		return true;
+	}
+
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		if (!shadow) {
+			super.draw(canvas, mapView, false);
+		}
 	}
 
 }
