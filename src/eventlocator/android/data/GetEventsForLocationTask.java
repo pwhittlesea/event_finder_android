@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -101,7 +102,7 @@ public class GetEventsForLocationTask {
 						Toast.LENGTH_LONG).show();
 
 			} else {
-
+					Collections.sort(result);
 			}
 
 			listView.setAdapter(new ArrayAdapter<Event>(context,

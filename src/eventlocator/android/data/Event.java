@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Event {
+public class Event  implements Comparable {
 	private String url;
 	private String label;
 	private String desc;
@@ -45,6 +45,10 @@ public class Event {
 	}
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+	public int compareTo(Object someEvent) {
+		Event comp = (Event) someEvent;
+		return getStart().compareTo(comp.getStart());
 	}
 	
 	
