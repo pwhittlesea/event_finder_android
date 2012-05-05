@@ -2,27 +2,26 @@ package eventlocator.android;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.text.method.ScrollingMovementMethod;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
 
 import eventlocator.android.data.GetEventsForLocationTask;
 
 public class EventItemizedOverlay extends
 		ItemizedOverlay<EventLocationOverlayItem> {
 	Context mContext;
+	MapView mapView;
 	private ArrayList<EventLocationOverlayItem> mOverlays = new ArrayList<EventLocationOverlayItem>();
 
 	public EventItemizedOverlay(Drawable defaultMarker) {
@@ -30,8 +29,10 @@ public class EventItemizedOverlay extends
 		populate();
 	}
 
-	public EventItemizedOverlay(Drawable defaultMarker, Context context) {
+	public EventItemizedOverlay(Drawable defaultMarker, MapView mapView,
+			Context context) {
 		super(boundCenterBottom(defaultMarker));
+		this.mapView = mapView;
 		mContext = context;
 		populate();
 	}
@@ -53,15 +54,30 @@ public class EventItemizedOverlay extends
 
 	@Override
 	protected boolean onTap(int index) {
-		EventLocationOverlayItem item = mOverlays.get(index);
-		Dialog dialog = new Dialog(mContext);
+		final EventLocationOverlayItem item = mOverlays.get(index);
+		final Dialog dialog = new Dialog(mContext);
 
 		dialog.setContentView(R.layout.location_dialog);
 		dialog.setTitle(item.getTitle());
 		ListView listView = (ListView) dialog.findViewById(R.id.event_list);
+		Button focusBtn = (Button) dialog.findViewById(R.id.focus_map);
+		focusBtn.setOnClickListener(new View.OnClickListener() {
+			//Button listener to focus the map on a building.
+			public void onClick(View v) {
+				GeoPoint gp = new GeoPoint((int) (item.getEventLocation()
+						.getLat() * 1E6), (int) (item.getEventLocation()
+						.getLong() * 1E6));
+				mapView.getController().animateTo(gp);
+				dialog.hide();
+				mapView.getController().setZoom(19);
+
+			}
+		});
+
 		GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
 				mContext.getString(R.string.fetch_events_for_location_server_url),
 				item.getEventLocation(), listView, mContext);
+
 		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 		lp.copyFrom(dialog.getWindow().getAttributes());
 		lp.width = WindowManager.LayoutParams.FILL_PARENT;

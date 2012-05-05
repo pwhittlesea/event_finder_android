@@ -5,12 +5,27 @@
               android:layout_height="fill_parent"
               android:padding="3dp"
               >
-    <ImageView android:id="@+id/brand_image"
-               android:layout_width="wrap_content"
-               android:layout_height="fill_parent"
-               android:layout_marginRight="3dp"
-               android:src="@drawable/uos_logo_vert_light"
-               />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/focus_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/focus_map_btn" />
+
+        <ImageView
+            android:id="@+id/brand_image"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="3dp"
+            android:src="@drawable/uos_logo_vert_light" />
+
+    </LinearLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/layout_event"
               android:orientation="vertical"

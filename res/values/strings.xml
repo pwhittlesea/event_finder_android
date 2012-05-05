@@ -8,6 +8,7 @@
     <string name="fetch_events_for_location_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_events_for_location.php</string>
     <string name="fetch_locations_server_url">http://kanga-ac10g08.ecs.soton.ac.uk/mobile/fetch_locations.php</string>
     <string name="refresh_string">Refresh</string>
+    <string name="focus_map_btn">Focus Map</string>
     <string name="list_view_string">List View</string>
     
 </resources>

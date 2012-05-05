@@ -1,6 +1,5 @@
 package eventlocator.android.data;
 
-import com.google.android.maps.GeoPoint;
 
 public class EventRequest {
 	private SpecialGeoPoint geoPoint;

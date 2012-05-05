@@ -20,7 +20,7 @@ public class EventLocationOverlayItem extends OverlayItem {
 		Drawable drawable;
 
 		Random r = new Random();
-//TODO Set this to the number of events
+		// TODO Set this to the number of events
 		switch (r.nextInt(8)) {
 		case 1:
 			drawable = context.getResources().getDrawable(R.drawable.map_pin_1);

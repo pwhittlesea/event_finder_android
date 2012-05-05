@@ -1,7 +1,5 @@
 package eventlocator.android;
 
-import java.text.SimpleDateFormat;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -11,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,20 +18,18 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
 import eventlocator.android.MyLocation.LocationResult;
-import eventlocator.android.data.Event;
 import eventlocator.android.data.EventLocation;
 import eventlocator.android.data.EventLocations;
 import eventlocator.android.data.GetEventLocationsTask;
@@ -89,7 +84,7 @@ public class GoogleMapsActivity extends MapActivity {
 
 		eventPin = this.getResources().getDrawable(R.drawable.map_pin_1);
 
-		itemizedoverlay = new EventItemizedOverlay(eventPin, this);
+		itemizedoverlay = new EventItemizedOverlay(eventPin, mapView, this);
 
 		locationResult = new LocationResult() {
 			@Override
@@ -107,7 +102,7 @@ public class GoogleMapsActivity extends MapActivity {
 											.getLatitude() * 1E6),
 											(int) (currentLocation
 													.getLongitude() * 1E6)));
-							mapView.getController().setZoom(15);
+							mapView.getController().setZoom(16);
 							refreshEventLocations();
 							firstFoundLocation = false;
 						}
@@ -140,12 +135,14 @@ public class GoogleMapsActivity extends MapActivity {
 		myLocationOverlay.enableCompass();
 		myLocationOverlay.enableMyLocation();
 	};
+
 	@Override
 	protected void onDestroy() {
-	    super.onDestroy();
-	    if( filterText != null){//remove listener only if list view has been viewed.
-	    	filterText.removeTextChangedListener(filterTextWatcher);
-	    }
+		super.onDestroy();
+		if (filterText != null) {// remove listener only if list view has been
+									// viewed.
+			filterText.removeTextChangedListener(filterTextWatcher);
+		}
 	}
 
 	private void refreshEventLocations() {
@@ -154,7 +151,7 @@ public class GoogleMapsActivity extends MapActivity {
 		if (!mapView.getOverlays().isEmpty()) {
 			System.out.println("clearing overlays");
 			mapView.getOverlays().clear();
-			itemizedoverlay = new EventItemizedOverlay(eventPin, this);
+			itemizedoverlay = new EventItemizedOverlay(eventPin, mapView, this);
 
 		}
 		System.out.println("add my location overlay");
@@ -173,7 +170,8 @@ public class GoogleMapsActivity extends MapActivity {
 	private void getEventLocations(EventItemizedOverlay itemizedoverlay) {
 
 		// We will return a short list
-		Log.d("getEvents()", "getEvents Called events");//TODO change method names etc
+		Log.d("getEvents()", "getEvents Called events");// TODO change method
+														// names etc
 
 		SpecialGeoPoint geoPoint = new SpecialGeoPoint(
 				currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -182,8 +180,8 @@ public class GoogleMapsActivity extends MapActivity {
 		 * overlay
 		 */
 		GetEventLocationsTask serverConnection = new GetEventLocationsTask(
-				getString(R.string.fetch_locations_server_url), geoPoint, itemizedoverlay, currentEventLocations,
-				getApplicationContext());
+				getString(R.string.fetch_locations_server_url), geoPoint,
+				itemizedoverlay, currentEventLocations, getApplicationContext());
 
 	}
 
@@ -193,7 +191,7 @@ public class GoogleMapsActivity extends MapActivity {
 			mapView.getController().animateTo(
 					new GeoPoint((int) (currentLocation.getLatitude() * 1E6),
 							(int) (currentLocation.getLongitude() * 1E6)));
-			mapView.getController().setZoom(15);
+			mapView.getController().setZoom(16);
 		} else {
 			Toast.makeText(getApplicationContext(), "No location available",
 					Toast.LENGTH_LONG).show();
@@ -231,66 +229,88 @@ public class GoogleMapsActivity extends MapActivity {
 		}
 	}
 
-	
 	private TextWatcher filterTextWatcher = new TextWatcher() {
-		
-		
 
-	    public void afterTextChanged(Editable s) {
-	    }
+		public void afterTextChanged(Editable s) {
+		}
 
-	    public void beforeTextChanged(CharSequence s, int start, int count,
-	            int after) {
-	    }
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+		}
 
-	    public void onTextChanged(CharSequence s, int start, int before,
-	            int count) {
-	        filterListAdapter.getFilter().filter(s);
-	    }
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			filterListAdapter.getFilter().filter(s);
+		}
 
 	};
-	
-private void showListView() {
-		
-		if(currentEventLocations.size() == 0){
-			Toast.makeText(getApplicationContext(), "No events have been loaded yet, try refreshing", Toast.LENGTH_SHORT).show();
+
+	private void showListView() {
+
+		if (currentEventLocations.size() == 0) {
+			Toast.makeText(getApplicationContext(),
+					"No events have been loaded yet, try refreshing",
+					Toast.LENGTH_SHORT).show();
 		} else {
-			Dialog dialog = new Dialog(this);
-			dialog.setContentView(R.layout.filter_locations_dialog);
-			dialog.setTitle("Location List");
-			
-			 filterText = (EditText) dialog.findViewById(R.id.filter_text_box);
-			
-			    filterText.addTextChangedListener(filterTextWatcher);
-			    
-				LinearLayout layoutRoot = (LinearLayout) dialog
-						.findViewById(R.id.location_list_layout_root);
-		
-			ListView list = (ListView) dialog.findViewById(R.id.filtered_list);
-			filterListAdapter = new ArrayAdapter<EventLocation>(getApplicationContext(),
-					R.layout.list_item, currentEventLocations);
+			final Dialog locationFilterDialog = new Dialog(this);
+			locationFilterDialog
+					.setContentView(R.layout.filter_locations_dialog);
+			locationFilterDialog.setTitle("Location List");
+
+			filterText = (EditText) locationFilterDialog
+					.findViewById(R.id.filter_text_box);
+
+			filterText.addTextChangedListener(filterTextWatcher);
+
+			LinearLayout layoutRoot = (LinearLayout) locationFilterDialog
+					.findViewById(R.id.location_list_layout_root);
+
+			ListView list = (ListView) locationFilterDialog
+					.findViewById(R.id.filtered_list);
+			filterListAdapter = new ArrayAdapter<EventLocation>(
+					getApplicationContext(), R.layout.list_item,
+					currentEventLocations);
 			list.setAdapter(filterListAdapter);
-			 
+
 			list.setOnItemClickListener(new OnItemClickListener() {
 
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int pos, long id) {
-					EventLocation eventLocation = (EventLocation) arg0.getAdapter().getItem(pos);
-					Dialog dialog = new Dialog(contex);
-		
+					final EventLocation eventLocation = (EventLocation) arg0
+							.getAdapter().getItem(pos);
+					final Dialog dialog = new Dialog(contex);
+
 					dialog.setContentView(R.layout.location_dialog);
 					dialog.setTitle(eventLocation.getLabel());
-					ListView listView = (ListView) dialog.findViewById(R.id.event_list);
+					ListView listView = (ListView) dialog
+							.findViewById(R.id.event_list);
+
+					Button focusBtn = (Button) dialog
+							.findViewById(R.id.focus_map);
+					focusBtn.setOnClickListener(new View.OnClickListener() {
+						// Button listener to focus the map on a building.
+						public void onClick(View v) {
+							GeoPoint gp = new GeoPoint((int) (eventLocation
+									.getLat() * 1E6), (int) (eventLocation
+									.getLong() * 1E6));
+							mapView.getController().animateTo(gp);
+							locationFilterDialog.hide();
+							dialog.hide();
+							locationFilterDialog.hide();
+							mapView.getController().setZoom(19);
+
+						}
+					});
+
 					GetEventsForLocationTask getEventsForLocationTask = new GetEventsForLocationTask(
 							contex.getString(R.string.fetch_events_for_location_server_url),
 							eventLocation, listView, contex);
-					 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-					    lp.copyFrom(dialog.getWindow().getAttributes());
-					    lp.width = WindowManager.LayoutParams.FILL_PARENT;
-					    lp.height = WindowManager.LayoutParams.FILL_PARENT;
-					    dialog.show();
-					    dialog.getWindow().setAttributes(lp);
-					
+					WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+					lp.copyFrom(dialog.getWindow().getAttributes());
+					lp.width = WindowManager.LayoutParams.FILL_PARENT;
+					lp.height = WindowManager.LayoutParams.FILL_PARENT;
+					dialog.show();
+					dialog.getWindow().setAttributes(lp);
 
 					LinearLayout layoutRoot = (LinearLayout) dialog
 							.findViewById(R.id.layout_root);
@@ -298,28 +318,20 @@ private void showListView() {
 							dialog);
 					layoutRoot.setOnTouchListener(activitySwipeDetector);
 
-					
 				}
 			});
-			
-			
-			
-			
+
 			ActivitySwipeDetector activitySwipeDetector = new ActivitySwipeDetector(
-					dialog);
+					locationFilterDialog);
 			layoutRoot.setOnTouchListener(activitySwipeDetector);
 			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-			lp.copyFrom(dialog.getWindow().getAttributes());
+			lp.copyFrom(locationFilterDialog.getWindow().getAttributes());
 			lp.width = WindowManager.LayoutParams.FILL_PARENT;
 			lp.height = WindowManager.LayoutParams.FILL_PARENT;
-			dialog.show();
-			dialog.getWindow().setAttributes(lp);
-			
-			
-			
-			
+			locationFilterDialog.show();
+			locationFilterDialog.getWindow().setAttributes(lp);
+
 		}
-		
 
 	}
 

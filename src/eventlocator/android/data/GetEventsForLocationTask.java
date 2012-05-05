@@ -13,23 +13,16 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.OverlayItem;
-
 import eventlocator.android.ActivitySwipeDetector;
-import eventlocator.android.EventItemizedOverlay;
 import eventlocator.android.R;
 
 public class GetEventsForLocationTask {
@@ -75,7 +68,7 @@ public class GetEventsForLocationTask {
 				events = jsonToObjects.findAll();
 
 				Log.d("getEvents()", "Found " + events.size());
-				
+
 				if (events.size() > 150) {
 					subList.addAll(events.subList(0, 150));
 				} else {
@@ -86,7 +79,7 @@ public class GetEventsForLocationTask {
 				e1.printStackTrace();
 				toastErrorText = "No network connection available";
 			}
-			
+
 			return subList;
 		}
 
@@ -98,11 +91,11 @@ public class GetEventsForLocationTask {
 
 			if (result.size() == 0) {
 				Log.d("getEvents()", "No Events available");
-				Toast.makeText(context, toastErrorText,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, toastErrorText, Toast.LENGTH_LONG)
+						.show();
 
 			} else {
-					Collections.sort(result);
+				Collections.sort(result);
 			}
 
 			listView.setAdapter(new ArrayAdapter<Event>(context,
@@ -119,10 +112,12 @@ public class GetEventsForLocationTask {
 
 					TextView textView = (TextView) dialog
 							.findViewById(R.id.event_text);
-					 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E dd MMM HH:mm");
-					
+					SimpleDateFormat simpleDateformat = new SimpleDateFormat(
+							"E dd MMM HH:mm");
+
 					textView.setText(event.getDesc() + "\n \n Event Start: "
-							+ simpleDateformat.format(event.getStart()) + "\n \n Event End: "
+							+ simpleDateformat.format(event.getStart())
+							+ "\n \n Event End: "
 							+ simpleDateformat.format(event.getEnd()));
 					textView.setMovementMethod(new ScrollingMovementMethod());
 

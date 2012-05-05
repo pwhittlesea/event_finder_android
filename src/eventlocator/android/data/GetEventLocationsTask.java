@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.OverlayItem;
 
 import eventlocator.android.EventItemizedOverlay;
 import eventlocator.android.EventLocationOverlayItem;

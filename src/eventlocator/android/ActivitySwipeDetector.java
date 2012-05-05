@@ -1,6 +1,5 @@
 package eventlocator.android;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.util.Log;
 import android.view.MotionEvent;

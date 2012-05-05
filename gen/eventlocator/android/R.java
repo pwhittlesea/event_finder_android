@@ -34,19 +34,21 @@ public final class R {
     }
     public static final class id {
         public static final int brand_image=0x7f070001;
-        public static final int centre_loc=0x7f07000b;
-        public static final int event_list=0x7f070009;
+        public static final int centre_loc=0x7f07000d;
+        public static final int event_list=0x7f07000b;
         public static final int event_text=0x7f070003;
         public static final int filter_text_box=0x7f070007;
         public static final int filtered_layout=0x7f070006;
         public static final int filtered_list=0x7f070008;
+        public static final int focus_map=0x7f07000a;
         public static final int image=0x7f070004;
         public static final int layout_event=0x7f070002;
         public static final int layout_root=0x7f070000;
-        public static final int list_view=0x7f07000d;
+        public static final int linearLayout1=0x7f070009;
+        public static final int list_view=0x7f07000f;
         public static final int location_list_layout_root=0x7f070005;
-        public static final int mapview=0x7f07000a;
-        public static final int refresh_events=0x7f07000c;
+        public static final int mapview=0x7f07000c;
+        public static final int refresh_events=0x7f07000e;
     }
     public static final class layout {
         public static final int event_dialog=0x7f030000;
@@ -64,8 +66,9 @@ public final class R {
         public static final int fetch_events_for_location_server_url=0x7f040004;
         public static final int fetch_events_server_url=0x7f040003;
         public static final int fetch_locations_server_url=0x7f040005;
+        public static final int focus_map_btn=0x7f040007;
         public static final int hello=0x7f040000;
-        public static final int list_view_string=0x7f040007;
+        public static final int list_view_string=0x7f040008;
         public static final int locString=0x7f040002;
         public static final int refresh_string=0x7f040006;
     }

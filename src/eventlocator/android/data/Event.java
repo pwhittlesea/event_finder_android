@@ -1,6 +1,5 @@
 package eventlocator.android.data;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Event  implements Comparable<Event> {
