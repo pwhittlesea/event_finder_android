@@ -13,6 +13,7 @@
         android:label="@string/app_name" >
        
         <uses-library android:name="com.google.android.maps" />
+        <uses-library android:name="android.test.runner" />
         <!-- Keep splash screen in portrait mode so it looks right -->
         <activity
             android:name="eventlocator.android.GoogleMapsActivity"
@@ -27,4 +28,7 @@
             </intent-filter>
         </activity>
     </application>
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+       android:targetPackage="eventlocator.android" android:label="Tests for My App" />
+  
 </manifest>
