@@ -1,7 +1,5 @@
 package eventlocator.android;
 
-import java.util.Random;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
@@ -19,9 +17,7 @@ public class EventLocationOverlayItem extends OverlayItem {
 		this.eventLocation = eventLocation;
 		Drawable drawable;
 
-		Random r = new Random();
-		// TODO Set this to the number of events
-		switch (r.nextInt(8)) {
+		switch (eventLocation.getNum()) {
 		case 1:
 			drawable = context.getResources().getDrawable(R.drawable.map_pin_1);
 			break;

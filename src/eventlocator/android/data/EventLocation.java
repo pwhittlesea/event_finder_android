@@ -6,6 +6,7 @@ public class EventLocation {
 	private float lat;
 	private String label;
 	private String place;
+	private int num;
 
 	public float getLong() {
 		return lng;
@@ -41,6 +42,14 @@ public class EventLocation {
 
 	public void setPlace(String place) {
 		this.place = place;
+	}
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
 	}
 
 }
