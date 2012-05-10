@@ -69,7 +69,7 @@ public class EventItemizedOverlay extends
 						.getLong() * 1E6));
 				mapView.getController().animateTo(gp);
 				dialog.hide();
-				mapView.getController().setZoom(19);
+				mapView.getController().setZoom(20);
 
 			}
 		});

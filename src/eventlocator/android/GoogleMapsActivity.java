@@ -297,7 +297,7 @@ public class GoogleMapsActivity extends MapActivity {
 							locationFilterDialog.hide();
 							dialog.hide();
 							locationFilterDialog.hide();
-							mapView.getController().setZoom(19);
+							mapView.getController().setZoom(20);
 
 						}
 					});
